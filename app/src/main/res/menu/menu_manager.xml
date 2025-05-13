@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_profile"
+        android:title="Trang cá nhân" />
+    <item
+        android:id="@+id/menu_students"
+        android:title="Xem sinh viên" />
+    <item
+        android:id="@+id/menu_login_history"
+        android:title="Lịch sử đăng nhập" />
+    <item
+        android:id="@+id/menu_logout"
+        android:title="Đăng xuất" />
+</menu>

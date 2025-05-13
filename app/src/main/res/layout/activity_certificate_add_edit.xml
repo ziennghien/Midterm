@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/edtCertificateNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Certificate Number"
+            android:inputType="text"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/edtCertificateName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Certificate Name"
+            android:layout_marginTop="8dp"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/edtIssueDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Issue Date (dd/MM/yyyy)"
+            android:focusable="false"
+            android:clickable="true"
+            android:layout_marginTop="8dp"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/edtIssuer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Issuer"
+            android:layout_marginTop="8dp"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/edtPlace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Place"
+            android:layout_marginTop="8dp"
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/btnSaveCertificate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+
+</ScrollView>
