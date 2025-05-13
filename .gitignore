@@ -1,1 +1,24 @@
+# Android Studio
+.idea/
+*.iml
+.gradle/
 local.properties
+
+# Build output
+/build/
+app/build/
+
+# Signing keys
+*.jks
+*.keystore
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Log
+*.log

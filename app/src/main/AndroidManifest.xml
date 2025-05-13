@@ -26,12 +26,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Auth -->
-        <activity android:name=".auth.LoginActivity" />
-
-        <!-- Profile -->
-        <activity android:name=".profile.ProfileActivity" />
-
     </application>
 
 </manifest>
