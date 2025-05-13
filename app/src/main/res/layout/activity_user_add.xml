@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Detail"
+            app:title="Add User"
             app:titleTextColor="@android:color/white"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -34,23 +34,6 @@
             android:orientation="vertical"
             android:padding="16dp"
             android:gravity="center_horizontal">
-
-            <!-- Avatar -->
-            <ImageView
-                android:id="@+id/imgAvatar"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:src="@drawable/ic_avatar_placeholder"
-                android:scaleType="centerCrop"
-                android:layout_marginTop="24dp"/>
-
-            <!-- Change Image -->
-            <Button
-                android:id="@+id/btnChangeImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change Image"
-                android:layout_marginTop="8dp" />
 
             <!-- UserID -->
             <TextView
@@ -133,17 +116,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Save" />
-
-                <Button
-                    android:id="@+id/btnDelete"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Delete"
-                    android:layout_marginStart="8dp"
-                    android:backgroundTint="@android:color/holo_red_dark"
-                    android:textColor="@android:color/white" />
+                    android:text="Add" />
             </LinearLayout>
 
         </LinearLayout>
