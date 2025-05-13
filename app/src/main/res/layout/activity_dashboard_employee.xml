@@ -61,8 +61,7 @@
                     android:id="@+id/ic_student"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/ic_student"
-                    android:contentDescription="@string/student_icon" />
+                    android:src="@drawable/ic_student"/>
 
                 <TextView
                     android:id="@+id/tvStudentCount"
