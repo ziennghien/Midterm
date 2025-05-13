@@ -1,76 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:fillViewport="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
         android:gravity="center_horizontal">
 
+        <!-- Avatar -->
         <ImageView
             android:id="@+id/imgAvatar"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/ic_default_avatar"
+            android:src="@drawable/ic_avatar_placeholder"
             android:scaleType="centerCrop"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginTop="24dp" />
 
+        <!-- Change Image -->
         <Button
-            android:id="@+id/btnChangeAvatar"
+            android:id="@+id/btnChangeImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Change Avatar"
-            android:visibility="gone" />
+            android:text="Change Image"
+            android:layout_marginTop="8dp" />
 
+        <!-- Name -->
         <EditText
             android:id="@+id/edtName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Name"
-            android:minHeight="48dp" />
+            android:inputType="textPersonName"
+            android:layout_marginTop="24dp" />
 
+        <!-- Age -->
         <EditText
             android:id="@+id/edtAge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Age"
             android:inputType="number"
-            android:minHeight="48dp" />
+            android:layout_marginTop="16dp" />
 
+        <!-- Phone Number -->
         <EditText
             android:id="@+id/edtPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Phone Number"
             android:inputType="phone"
-            android:minHeight="48dp" />
+            android:layout_marginTop="16dp" />
 
-        <EditText
-            android:id="@+id/edtStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:hint="Status"
-            android:minHeight="48dp" />
-
+        <!-- Role -->
         <EditText
             android:id="@+id/edtRole"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
             android:hint="Role"
-            android:minHeight="48dp" />
+            android:inputType="text"
+            android:layout_marginTop="16dp" />
 
+        <!-- User (Email/Username) -->
+        <EditText
+            android:id="@+id/edtUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="User"
+            android:inputType="textEmailAddress"
+            android:layout_marginTop="16dp" />
+
+        <!-- Password -->
+        <EditText
+            android:id="@+id/edtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_marginTop="16dp" />
+
+        <!-- Save Button -->
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Changes"
-            android:layout_marginTop="24dp" />
+            android:text="Save"
+            android:layout_marginTop="32dp" />
 
     </LinearLayout>
-
 </ScrollView>
