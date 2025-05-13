@@ -42,6 +42,7 @@ dependencies {
     implementation (libs.recyclerview)
     implementation (libs.constraintlayout)
     implementation (libs.glide)
+    implementation(libs.firebase.database)
     annotationProcessor (libs.compiler)
     implementation (libs.opencsv)
     testImplementation (libs.junit)

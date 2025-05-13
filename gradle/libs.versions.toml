@@ -14,6 +14,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 opencsv = "5.7.1"
 recyclerview = "1.4.0"
+firebaseDatabase = "21.0.0"
 
 [libraries]
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
@@ -33,6 +34,7 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
