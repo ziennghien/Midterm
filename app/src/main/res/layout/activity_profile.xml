@@ -1,95 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <!-- AppBar với Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:gravity="center_horizontal">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <!-- Avatar -->
-        <ImageView
-            android:id="@+id/imgAvatar"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/ic_avatar_placeholder"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="24dp" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Profile"
+            app:titleTextColor="@android:color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- Change Image -->
-        <Button
-            android:id="@+id/btnChangeImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change Image"
-            android:layout_marginTop="8dp" />
+    <!-- Nội dung chính -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Name -->
-        <EditText
-            android:id="@+id/edtName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:layout_marginTop="24dp" />
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center_horizontal">
 
-        <!-- Age -->
-        <EditText
-            android:id="@+id/edtAge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Age"
-            android:inputType="number"
-            android:layout_marginTop="16dp" />
+            <!-- Avatar -->
+            <ImageView
+                android:id="@+id/imgAvatar"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_avatar_placeholder"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="24dp" />
 
-        <!-- Phone Number -->
-        <EditText
-            android:id="@+id/edtPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phone Number"
-            android:inputType="phone"
-            android:layout_marginTop="16dp" />
+            <!-- Change Image -->
+            <Button
+                android:id="@+id/btnChangeImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change Image"
+                android:layout_marginTop="8dp" />
 
-        <!-- Role -->
-        <EditText
-            android:id="@+id/edtRole"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Role"
-            android:inputType="text"
-            android:layout_marginTop="16dp" />
+            <!-- UserID -->
+            <TextView
+                android:id="@+id/edtID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="UserID"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="2dp"
+                android:textSize="46px"/>
 
-        <!-- User (Email/Username) -->
-        <EditText
-            android:id="@+id/edtUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="User"
-            android:inputType="textEmailAddress"
-            android:layout_marginTop="16dp" />
+            <!-- Name -->
+            <EditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                android:inputType="textPersonName"
+                android:layout_marginTop="24dp" />
 
-        <!-- Password -->
-        <EditText
-            android:id="@+id/edtPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:layout_marginTop="16dp" />
+            <!-- Age -->
+            <EditText
+                android:id="@+id/edtAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Age"
+                android:inputType="number"
+                android:layout_marginTop="16dp" />
 
-        <!-- Save Button -->
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:layout_marginTop="32dp" />
+            <!-- Phone Number -->
+            <EditText
+                android:id="@+id/edtPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Phone Number"
+                android:inputType="phone"
+                android:layout_marginTop="16dp" />
 
-    </LinearLayout>
-</ScrollView>
+            <!-- Role -->
+            <EditText
+                android:id="@+id/edtRole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Role"
+                android:inputType="text"
+                android:layout_marginTop="16dp" />
+
+            <!-- User (Email/Username) -->
+            <EditText
+                android:id="@+id/edtUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="User"
+                android:inputType="textEmailAddress"
+                android:layout_marginTop="16dp" />
+
+            <!-- Password -->
+            <EditText
+                android:id="@+id/edtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:layout_marginTop="16dp" />
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:layout_marginTop="32dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
