@@ -1,44 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_student_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp">
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="?attr/selectableItemBackground">
 
+    <!-- ID và Name-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/tvStudentId"
-            android:layout_width="match_parent"
+            android:id="@+id/tvID"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Student ID"
+            android:text="12345"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
 
         <TextView
-            android:id="@+id/tvStudentName"
-            android:layout_width="match_parent"
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Student Name"
-            android:textSize="15sp"
-            android:layout_marginTop="4dp"/>
-
-        <TextView
-            android:id="@+id/tvStudentMajor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Major"
-            android:textSize="14sp"
-            android:layout_marginTop="2dp"/>
+            android:text=" - John Doe"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Major -->
+    <TextView
+        android:id="@+id/tvMajor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Major: Computer Science"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
+        android:textColor="@android:color/darker_gray" />
+
+    <!-- Class -->
+    <TextView
+        android:id="@+id/tvClass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Class: A1"
+        android:textSize="14sp"
+        android:layout_marginTop="2dp"
+        android:textColor="@android:color/darker_gray" />
+
+</LinearLayout>

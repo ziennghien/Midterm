@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Detail"
+            app:title="Add Student"
             app:titleTextColor="@android:color/white"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -35,7 +35,7 @@
             android:padding="16dp"
             android:gravity="center_horizontal">
 
-            <!-- StudentID -->
+            <!-- UserID -->
             <EditText
                 android:id="@+id/edtID"
                 android:layout_width="match_parent"
@@ -76,9 +76,8 @@
                 android:layout_marginTop="16dp" />
 
 
-            <!-- Save & Delete buttons -->
+            <!-- Add buttons -->
             <LinearLayout
-                style="?android:attr/buttonBarStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -89,27 +88,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Save" />
+                    android:text="Add" />
 
-                <Button
-                    android:id="@+id/btnDelete"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Delete"
-                    android:layout_marginStart="8dp"
-                    android:backgroundTint="@android:color/holo_red_dark"
-                    android:textColor="@android:color/white" />
             </LinearLayout>
-
-            <!--Xem Certificate-->
-            <Button
-                android:id="@+id/btnCertificate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="View Certificate"
-                android:backgroundTint="@android:color/holo_blue_dark"/>
 
         </LinearLayout>
     </ScrollView>
