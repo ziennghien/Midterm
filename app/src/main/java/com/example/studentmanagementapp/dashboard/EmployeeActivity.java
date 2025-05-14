@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.studentmanagementapp.LoginActivity;
 import com.example.studentmanagementapp.ProfileActivity;
+import com.example.studentmanagementapp.model.User;
 import com.example.studentmanagementapp.student.StudentManagementActivity;
 import com.example.studentmanagementapp.R;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
@@ -23,10 +24,20 @@ public class EmployeeActivity extends AppCompatActivity {
     private DatabaseReference studentsRef;
     private FirebaseAuth mAuth;
 
+    private User currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard_employee); // Đảm bảo bạn đặt tên XML đúng
+
+        // Nhận currentUser từ LoginActivity
+        currentUser = (User) getIntent().getSerializableExtra("currentUser");
+        if (currentUser == null) {
+            Toast.makeText(this, "Không nhận được user", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         // Khởi tạo Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -44,11 +55,13 @@ public class EmployeeActivity extends AppCompatActivity {
         // Điều hướng
         btnStudent.setOnClickListener(v -> {
             Intent intent = new Intent(EmployeeActivity.this, StudentManagementActivity.class);
+            intent.putExtra("currentUser", currentUser);
             startActivity(intent);
         });
 
         btnProfile.setOnClickListener(v -> {
             Intent intent = new Intent(EmployeeActivity.this, ProfileActivity.class);
+            intent.putExtra("currentUser", currentUser);
             startActivity(intent);
         });
 

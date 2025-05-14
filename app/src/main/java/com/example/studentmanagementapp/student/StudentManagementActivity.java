@@ -77,13 +77,13 @@ public class StudentManagementActivity extends BaseActivity {
         }
 
         // Setup RecyclerView
-        adapter = new StudentAdapter(studentList, role);
+        adapter = new StudentAdapter(studentList, currentUser);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
         // Thêm sinh viên
         fabAddStudent.setOnClickListener(view -> {
-            Intent intent = new Intent(this, StudentAddEditActivity.class);
+            Intent intent = new Intent(this, StudentAddActivity.class);
             intent.putExtra("mode", "add");
             intent.putExtra("currentUser", currentUser);
             startActivity(intent);
@@ -111,8 +111,6 @@ public class StudentManagementActivity extends BaseActivity {
     }
 
     private void loadStudentList() {
-        ProgressBar progressBar = findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
 
         studentsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -127,13 +125,11 @@ public class StudentManagementActivity extends BaseActivity {
                     }
                 }
                 adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(StudentManagementActivity.this, "Lỗi tải dữ liệu sinh viên", Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
             }
         });
     }

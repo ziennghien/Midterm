@@ -1,3 +1,4 @@
+// StudentAdapter.java
 package com.example.studentmanagementapp.adapter;
 
 import android.content.Context;
@@ -10,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.studentmanagementapp.R;
 import com.example.studentmanagementapp.model.Student;
-import com.example.studentmanagementapp.student.StudentAddEditActivity;
+import com.example.studentmanagementapp.model.User;
 import com.example.studentmanagementapp.student.StudentDetailActivity;
 
 import java.util.List;
@@ -18,11 +19,12 @@ import java.util.List;
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
 
     private List<Student> studentList;
-    private String role;
+    private User currentUser;
 
-    public StudentAdapter(List<Student> studentList, String role) {
+    // Nhận currentUser thay vì chỉ role
+    public StudentAdapter(List<Student> studentList, User currentUser) {
         this.studentList = studentList;
-        this.role = role;
+        this.currentUser   = currentUser;
     }
 
     @NonNull
@@ -43,17 +45,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         holder.tvMajor.setText("Major: " + student.getMajor());
         holder.tvClass.setText("Class: " + student.getClassName());
 
-        // Xử lý click item
+        // Click → mở Detail kèm currentUser
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
-            Intent intent;
-            if ("employee".equalsIgnoreCase(role)) {
-                intent = new Intent(context, StudentDetailActivity.class);
-            } else {
-                intent = new Intent(context, StudentAddEditActivity.class);
-                intent.putExtra("mode", "edit");
-            }
-            intent.putExtra("studentId", student.getId());
+            Intent intent = new Intent(context, StudentDetailActivity.class);
+            intent.putExtra("currentUser", currentUser);
+            intent.putExtra("studentId",   student.getId());
             context.startActivity(intent);
         });
     }
@@ -63,13 +60,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         return studentList.size();
     }
 
-    public static class StudentViewHolder extends RecyclerView.ViewHolder {
+    static class StudentViewHolder extends RecyclerView.ViewHolder {
         TextView tvID, tvName, tvMajor, tvClass;
-
-        public StudentViewHolder(@NonNull View itemView) {
+        StudentViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvID = itemView.findViewById(R.id.tvID);
-            tvName = itemView.findViewById(R.id.tvName);
+            tvID    = itemView.findViewById(R.id.tvID);
+            tvName  = itemView.findViewById(R.id.tvName);
             tvMajor = itemView.findViewById(R.id.tvMajor);
             tvClass = itemView.findViewById(R.id.tvClass);
         }
