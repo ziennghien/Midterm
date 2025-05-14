@@ -10,17 +10,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.studentmanagementapp.BaseActivity;
 
+import com.example.studentmanagementapp.BaseActivity;
 import com.example.studentmanagementapp.R;
 import com.example.studentmanagementapp.adapter.StudentAdapter;
 import com.example.studentmanagementapp.model.Student;
+import com.example.studentmanagementapp.model.User;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.*;
 
@@ -35,23 +34,27 @@ public class StudentManagementActivity extends BaseActivity {
     private StudentAdapter adapter;
     private final List<Student> studentList = new ArrayList<>();
 
-    private String role = "employee"; // mặc định
+    private User currentUser;
     private DatabaseReference studentsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_list); // layout chính
+        setContentView(R.layout.activity_student_list);
         setToolbar(R.id.toolbar);
 
-        // Nhận role từ Intent nếu có
-        role = getIntent().getStringExtra("role");
-        if (role == null) role = "employee";
+        // Nhận currentUser từ Intent
+        currentUser = (User) getIntent().getSerializableExtra("currentUser");
+        if (currentUser == null) {
+            Toast.makeText(this, "Không nhận được người dùng!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Firebase reference
+        // Firebase
         studentsRef = FirebaseHelper.getReference("Students");
 
-        // Ánh xạ view
+        // Liên kết view
         recyclerView = findViewById(R.id.recyclerViewStudents);
         fabAddStudent = findViewById(R.id.fabAddStudent);
         btnImportStudent = findViewById(R.id.btnImportStudent);
@@ -61,8 +64,13 @@ public class StudentManagementActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         setTitle("Student Management");
 
-        // Phân quyền hiển thị nút
-        if ("employee".equalsIgnoreCase(role)) {
+        // Phân quyền: admin và manager được thấy nút
+        String role = currentUser.getRole();
+        if ("admin".equalsIgnoreCase(role) || "manager".equalsIgnoreCase(role)) {
+            fabAddStudent.setVisibility(View.VISIBLE);
+            btnImportStudent.setVisibility(View.VISIBLE);
+            btnExportStudent.setVisibility(View.VISIBLE);
+        } else {
             fabAddStudent.setVisibility(View.GONE);
             btnImportStudent.setVisibility(View.GONE);
             btnExportStudent.setVisibility(View.GONE);
@@ -77,6 +85,7 @@ public class StudentManagementActivity extends BaseActivity {
         fabAddStudent.setOnClickListener(view -> {
             Intent intent = new Intent(this, StudentAddEditActivity.class);
             intent.putExtra("mode", "add");
+            intent.putExtra("currentUser", currentUser);
             startActivity(intent);
         });
 
@@ -88,9 +97,10 @@ public class StudentManagementActivity extends BaseActivity {
         btnExportStudent.setOnClickListener(view ->
                 Toast.makeText(this, "Export CSV (chưa xử lý)", Toast.LENGTH_SHORT).show());
 
-        // Load danh sách từ Firebase
+        // Tải danh sách sinh viên
         loadStudentList();
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -99,6 +109,7 @@ public class StudentManagementActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void loadStudentList() {
         ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
@@ -110,20 +121,20 @@ public class StudentManagementActivity extends BaseActivity {
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     Student student = snap.getValue(Student.class);
                     if (student != null) {
-                        student.setId(snap.getKey()); // gán id = key của node
-                        // Ghi ra log
+                        student.setId(snap.getKey());
                         Log.d("StudentID", "Loaded student ID: " + student.getId());
                         studentList.add(student);
                     }
                 }
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(StudentManagementActivity.this, "Lỗi tải dữ liệu sinh viên", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
-
 }

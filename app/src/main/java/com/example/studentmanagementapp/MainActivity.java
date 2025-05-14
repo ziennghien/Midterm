@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.studentmanagementapp.dashboard.AdminActivity;
 import com.example.studentmanagementapp.dashboard.EmployeeActivity;
 import com.example.studentmanagementapp.dashboard.ManagerActivity;
+import com.example.studentmanagementapp.model.User;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,9 +45,11 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                         String userEmail = userSnapshot.child("userName").getValue(String.class);
                         if (email.equals(userEmail)) {
-                            found = true;
-                            String role = userSnapshot.child("role").getValue(String.class);
-                            routeToRole(role);
+                            User user = userSnapshot.getValue(User.class);
+                            if (user != null) {
+                                user.setId(userSnapshot.getKey()); // set ID từ key Firebase
+                                routeToRole(user); // truyền user thay vì chỉ role
+                            }
                             return;
                         }
                     }
@@ -67,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void routeToRole(String role) {
-        if (role == null) {
+    private void routeToRole(User user) {
+        if (user == null || user.getRole() == null) {
             Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
             mAuth.signOut();
             startActivity(new Intent(this, LoginActivity.class));
@@ -76,23 +79,29 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        switch (role) {
+        Intent intent;
+
+        switch (user.getRole()) {
             case "admin":
-                startActivity(new Intent(this, AdminActivity.class));
+                intent = new Intent(this, AdminActivity.class);
                 break;
             case "employee":
-                startActivity(new Intent(this, EmployeeActivity.class));
+                intent = new Intent(this, EmployeeActivity.class);
                 break;
             case "manager":
-                startActivity(new Intent(this, ManagerActivity.class));
+                intent = new Intent(this, ManagerActivity.class);
                 break;
             default:
                 Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
                 mAuth.signOut();
                 startActivity(new Intent(this, LoginActivity.class));
-                break;
+                finish();
+                return;
         }
 
-        finish(); // Đóng MainActivity
+        intent.putExtra("currentUser", user); // ✅ Truyền user qua intent
+        startActivity(intent);
+        finish();
     }
+
 }
