@@ -60,6 +60,11 @@ public class CertificateDetailActivity extends AppCompatActivity {
             btnDelete.setVisibility(Button.GONE);
             edtName.setEnabled(false);
             edtIssueDate.setEnabled(false);
+        } else {
+            btnSave.setVisibility(Button.VISIBLE);
+            btnDelete.setVisibility(Button.VISIBLE);
+            edtName.setEnabled(true);
+            edtIssueDate.setEnabled(true);
         }
 
         // 4. DatePicker cho issueDate (DD/MM/YYYY)
@@ -89,20 +94,20 @@ public class CertificateDetailActivity extends AppCompatActivity {
         // 7. Xóa với dialog xác nhận
         btnDelete.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                    .setTitle("Xác nhận xóa")
-                    .setMessage("Bạn có chắc muốn xóa chứng chỉ này không?")
-                    .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                    .setTitle("Confirm Delete")
+                    .setMessage("Are you sure you want to delete this certificate?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             certRef.removeValue()
                                     .addOnSuccessListener(a -> {
                                         Toast.makeText(CertificateDetailActivity.this,
-                                                "Xóa thành công", Toast.LENGTH_SHORT).show();
+                                                "Deleted successfully", Toast.LENGTH_SHORT).show();
                                         finish();
                                     })
                                     .addOnFailureListener(e ->
                                             Toast.makeText(CertificateDetailActivity.this,
-                                                    "Xóa thất bại: " + e.getMessage(),
+                                                    "Delete failed: " + e.getMessage(),
                                                     Toast.LENGTH_SHORT).show()
                                     );
                         }

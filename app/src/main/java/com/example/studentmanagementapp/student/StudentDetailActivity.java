@@ -38,7 +38,7 @@ public class StudentDetailActivity extends AppCompatActivity {
         currentUser = (User) getIntent().getSerializableExtra("currentUser");
         studentId   = getIntent().getStringExtra("studentId");
         if (currentUser == null || studentId == null) {
-            Toast.makeText(this, "Thiếu thông tin user hoặc studentId", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Missing data!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -72,8 +72,8 @@ public class StudentDetailActivity extends AppCompatActivity {
         // 6. Delete (cascade) with confirmation dialog
         btnDelete.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
-                    .setTitle("Xác nhận xóa")
-                    .setMessage("Bạn có chắc muốn xóa sinh viên này và tất cả chứng chỉ liên quan không?")
+                    .setTitle("Confirm Delete")
+                    .setMessage("Are you sure you want to delete this student and all related certificates?")
                     .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -82,7 +82,7 @@ public class StudentDetailActivity extends AppCompatActivity {
                                     .addOnSuccessListener(aVoid -> {
                                         // Cascade delete chứng chỉ
                                         DatabaseReference certRef = FirebaseHelper.getReference("Certificates");
-                                        certRef.orderByChild("studentID")
+                                        certRef.orderByChild("studentId")
                                                 .equalTo(studentId)
                                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
@@ -96,13 +96,13 @@ public class StudentDetailActivity extends AppCompatActivity {
                                                 });
 
                                         Toast.makeText(StudentDetailActivity.this,
-                                                "Xóa sinh viên và chứng chỉ liên quan thành công",
+                                                "Delete student and related certificates successfully",
                                                 Toast.LENGTH_SHORT).show();
                                         finish();
                                     })
                                     .addOnFailureListener(e ->
                                             Toast.makeText(StudentDetailActivity.this,
-                                                    "Xóa thất bại: " + e.getMessage(),
+                                                    "Delete failed: " + e.getMessage(),
                                                     Toast.LENGTH_SHORT).show()
                                     );
                         }
@@ -163,17 +163,17 @@ public class StudentDetailActivity extends AppCompatActivity {
         String major = edtMajor.getText().toString().trim();
         String cls   = edtClass.getText().toString().trim();
         if (name.isEmpty() || major.isEmpty() || cls.isEmpty()) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
         studentRef.child("name").setValue(name);
         studentRef.child("major").setValue(major);
         studentRef.child("className").setValue(cls)
                 .addOnSuccessListener(aVoid ->
-                        Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Updated successfully", Toast.LENGTH_SHORT).show()
                 )
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Cập nhật thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
     }
 }

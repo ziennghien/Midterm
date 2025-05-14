@@ -89,37 +89,33 @@ public class StudentAddActivity extends AppCompatActivity {
         });
 
 
-        // 5. Xử lý click ADD
+        // 5. Xử lý nút Save
         btnAdd.setOnClickListener(v -> {
             String name  = edtName.getText().toString().trim();
             String major = edtMajor.getText().toString().trim();
             String cls   = edtClass.getText().toString().trim();
 
-            // validate
-            if (TextUtils.isEmpty(name)
-                    || TextUtils.isEmpty(major)
-                    || TextUtils.isEmpty(cls)) {
-                Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            // Validate
+            if (TextUtils.isEmpty(name) ||
+                    TextUtils.isEmpty(major) ||
+                    TextUtils.isEmpty(cls)) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Chuẩn bị map không bao gồm id
-            Map<String,Object> studentData = new HashMap<>();
-            studentData.put("name",      name);
-            studentData.put("major",     major);
-            studentData.put("className", cls);
-
-            // Đẩy map lên node
+            // Tạo object và lưu lên Firebase
+            Student student = new Student(newId, name, major, cls);
             studentsRef.child(newId)
-                    .setValue(studentData)
+                    .setValue(student)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Thêm sinh viên thành công!", Toast.LENGTH_SHORT).show();
-                        finish();
+                        Toast.makeText(this, "Add student successfully!", Toast.LENGTH_SHORT).show();
+                        finish();  // quay lại list
                     })
                     .addOnFailureListener(e ->
-                            Toast.makeText(this, "Thêm thất bại: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "Add student failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
                     );
         });
+
     }
 
     private void setupToolbar() {

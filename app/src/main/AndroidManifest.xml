@@ -11,37 +11,48 @@
         android:label="Student Management"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StudentManagementApp">
+        android:theme="@style/Theme.StudentManagementApp"
+        android:requestLegacyExternalStorage="true">
 
-        <!-- Activity khởi chạy đầu tiên -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
+    <!-- FileProvider để share file từ thư mục Download -->
+    <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="${applicationId}.provider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths" />
+    </provider>
 
-        <!--Student-->
-        <activity android:name=".student.StudentManagementActivity"/>
-        <activity android:name=".student.StudentDetailActivity" />
-        <activity android:name=".student.StudentAddActivity" />
+    <!-- Activity khởi chạy đầu tiên -->
+    <activity
+        android:name=".MainActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
+    </activity>
 
-        <!--Certificate-->
-        <activity android:name=".certificate.CertificateManagementActivity"/>
-        <activity android:name=".certificate.CertificateDetailActivity" />
-        <activity android:name=".certificate.CertificateAddActivity" />
+    <!-- Student -->
+    <activity android:name=".student.StudentManagementActivity"/>
+    <activity android:name=".student.StudentDetailActivity"/>
+    <activity android:name=".student.StudentAddActivity"/>
 
-        <!-- Các Activity còn lại -->
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".dashboard.AdminActivity"/>
-        <activity android:name=".user.UserManagementActivity"/>
-        <activity android:name=".admin.HistoryViewActivity"/>
-        <activity android:name=".ProfileActivity"/>
-        <activity android:name=".dashboard.EmployeeActivity"/>
-        <activity android:name=".dashboard.ManagerActivity"/>
+    <!-- Certificate -->
+    <activity android:name=".certificate.CertificateManagementActivity"/>
+    <activity android:name=".certificate.CertificateDetailActivity"/>
+    <activity android:name=".certificate.CertificateAddActivity"/>
 
-    </application>
+    <!-- Các Activity khác -->
+    <activity android:name=".LoginActivity"/>
+    <activity android:name=".dashboard.AdminActivity"/>
+    <activity android:name=".dashboard.EmployeeActivity"/>
+    <activity android:name=".dashboard.ManagerActivity"/>
+    <activity android:name=".user.UserManagementActivity"/>
+    <activity android:name=".admin.HistoryViewActivity"/>
+    <activity android:name=".ProfileActivity"/>
 
-</manifest>
+</application>
+    </manifest>

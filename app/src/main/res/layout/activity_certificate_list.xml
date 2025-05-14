@@ -51,7 +51,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/buttonBar"/>
 
-        <!-- Thanh nút Import/Export Certificate cố định bên dưới -->
+        <!---->
         <LinearLayout
             android:id="@+id/buttonBar"
             android:layout_width="0dp"
@@ -61,21 +61,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
-
-            <Button
-                android:id="@+id/btnImportCertificate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Import Certificate" />
-
-            <Button
-                android:id="@+id/btnExportCertificate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="Export Certificate" />
         </LinearLayout>
 
         <!-- Nút Thêm (Add) -->

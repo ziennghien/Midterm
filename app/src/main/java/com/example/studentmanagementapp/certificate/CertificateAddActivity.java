@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.studentmanagementapp.R;
+import com.example.studentmanagementapp.model.Certificate;
+import com.example.studentmanagementapp.model.Student;
 import com.example.studentmanagementapp.model.User;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
 import com.google.firebase.database.*;
@@ -43,7 +45,7 @@ public class CertificateAddActivity extends AppCompatActivity {
         currentUser = (User) getIntent().getSerializableExtra("currentUser");
         studentId   = getIntent().getStringExtra("studentId");
         if (currentUser == null || studentId == null) {
-            Toast.makeText(this, "Thiếu dữ liệu!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Missing data!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -100,7 +102,7 @@ public class CertificateAddActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(CertificateAddActivity.this,
-                        "Không thể tạo ID: " + error.getMessage(),
+                        "Cannot create ID: " + error.getMessage(),
                         Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -108,25 +110,26 @@ public class CertificateAddActivity extends AppCompatActivity {
 
         // 6. Xử lý nút Add
         btnSave.setOnClickListener(v -> {
-            String name = edtName.getText().toString().trim();
+            String name  = edtName.getText().toString().trim();
             String date = edtIssueDate.getText().toString().trim();
-            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(date)) {
-                Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+
+            // Validate
+            if (TextUtils.isEmpty(name) ||
+                    TextUtils.isEmpty(date)) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Map<String, Object> data = new HashMap<>();
-            data.put("name",      name);
-            data.put("issueDate", date);
-            data.put("studentID", studentId);
 
+            // Tạo object và lưu lên Firebase
+            Certificate certificate = new Certificate(newId, name, studentId, date);
             certRef.child(newId)
-                    .setValue(data)
-                    .addOnSuccessListener(a -> {
-                        Toast.makeText(this, "Thêm chứng chỉ thành công!", Toast.LENGTH_SHORT).show();
-                        finish();
+                    .setValue(certificate)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Add certificate successfully!", Toast.LENGTH_SHORT).show();
+                        finish();  // quay lại list
                     })
                     .addOnFailureListener(e ->
-                            Toast.makeText(this, "Thêm thất bại: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "Add certificate failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
                     );
         });
     }
