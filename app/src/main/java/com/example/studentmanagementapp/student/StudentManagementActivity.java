@@ -1,136 +1,283 @@
 package com.example.studentmanagementapp.student;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.studentmanagementapp.BaseActivity;
 import com.example.studentmanagementapp.R;
 import com.example.studentmanagementapp.adapter.StudentAdapter;
 import com.example.studentmanagementapp.model.Student;
 import com.example.studentmanagementapp.model.User;
+import com.example.studentmanagementapp.utils.CSVHelper;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.InputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StudentManagementActivity extends BaseActivity {
+    private static final int REQUEST_PICK_CSV = 1001;
 
     private RecyclerView recyclerView;
-    private FloatingActionButton fabAddStudent;
-    private Button btnImportStudent, btnExportStudent;
+    private FloatingActionButton fabAdd;
+    private Button btnImport, btnExport;
+    private SearchView searchView;
+
+    private final List<Student> masterList  = new ArrayList<>();
+    private final List<Student> displayList = new ArrayList<>();
     private StudentAdapter adapter;
-    private final List<Student> studentList = new ArrayList<>();
 
     private User currentUser;
-    private DatabaseReference studentsRef;
+    private DatabaseReference studentsRef, certRef;
+    private int csvMode = 0; // 0 = student, 1 = certificate
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_list);
-        setToolbar(R.id.toolbar);
 
-        // Nhận currentUser từ Intent
-        currentUser = (User) getIntent().getSerializableExtra("currentUser");
-        if (currentUser == null) {
-            Toast.makeText(this, "Không nhận được người dùng!", Toast.LENGTH_SHORT).show();
+        // Toolbar + nút back
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        setTitle("Student Management");
+
+        // Lấy currentUser
+        currentUser = (User)getIntent().getSerializableExtra("currentUser");
+        if (currentUser==null) {
+            Toast.makeText(this,"Missing data!",Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Firebase
+        // Khởi tạo refs & views
         studentsRef = FirebaseHelper.getReference("Students");
+        certRef     = FirebaseHelper.getReference("Certificates");
+        recyclerView= findViewById(R.id.recyclerViewStudents);
+        fabAdd      = findViewById(R.id.fabAddStudent);
+        btnImport   = findViewById(R.id.btnImportStudent);
+        btnExport   = findViewById(R.id.btnExportStudent);
+        searchView  = findViewById(R.id.searchView);
 
-        // Liên kết view
-        recyclerView = findViewById(R.id.recyclerViewStudents);
-        fabAddStudent = findViewById(R.id.fabAddStudent);
-        btnImportStudent = findViewById(R.id.btnImportStudent);
-        btnExportStudent = findViewById(R.id.btnExportStudent);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setTitle("Student Management");
-
-        // Phân quyền: admin và manager được thấy nút
+        // Phân quyền nút Add
         String role = currentUser.getRole();
         if ("admin".equalsIgnoreCase(role) || "manager".equalsIgnoreCase(role)) {
-            fabAddStudent.setVisibility(View.VISIBLE);
-            btnImportStudent.setVisibility(View.VISIBLE);
-            btnExportStudent.setVisibility(View.VISIBLE);
+            fabAdd.setOnClickListener(v -> {
+                Intent i = new Intent(this, StudentAddActivity.class);
+                i.putExtra("mode","add");
+                i.putExtra("currentUser",currentUser);
+                startActivity(i);
+            });
         } else {
-            fabAddStudent.setVisibility(View.GONE);
-            btnImportStudent.setVisibility(View.GONE);
-            btnExportStudent.setVisibility(View.GONE);
+            fabAdd.setVisibility(FloatingActionButton.GONE);
         }
 
-        // Setup RecyclerView
-        adapter = new StudentAdapter(studentList, currentUser);
+        // Import/Export CSV
+        btnImport.setOnClickListener(v -> showCsvDialog(true));
+        btnExport.setOnClickListener(v -> showCsvDialog(false));
+
+        // Setup Recycler + Adapter
+        adapter = new StudentAdapter(displayList, currentUser);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // Thêm sinh viên
-        fabAddStudent.setOnClickListener(view -> {
-            Intent intent = new Intent(this, StudentAddActivity.class);
-            intent.putExtra("mode", "add");
-            intent.putExtra("currentUser", currentUser);
-            startActivity(intent);
+        // Live search
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+            @Override public boolean onQueryTextSubmit(String q){ return false; }
+            @Override public boolean onQueryTextChange(String q){
+                filter(q); return true;
+            }
         });
 
-        // Import CSV
-        btnImportStudent.setOnClickListener(view ->
-                Toast.makeText(this, "Import CSV (chưa xử lý)", Toast.LENGTH_SHORT).show());
-
-        // Export CSV
-        btnExportStudent.setOnClickListener(view ->
-                Toast.makeText(this, "Export CSV (chưa xử lý)", Toast.LENGTH_SHORT).show());
-
-        // Tải danh sách sinh viên
+        // Load dữ liệu
         loadStudentList();
+    }
+
+    private void showCsvDialog(boolean isImport) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(isImport ? "Import CSV" : "Export CSV")
+                .setItems(new String[]{"Student","Certificate","Cancel"}, (d, which) -> {
+                    if (which==0) {
+                        csvMode = 0;
+                        if (isImport) pickCsvFile();
+                        else exportStudentsToDownloads();
+                    } else if (which==1) {
+                        csvMode = 1;
+                        if (isImport) pickCsvFile();
+                        else exportCertificatesToDownloads();
+                    }
+                })
+                .show();
+    }
+
+    private void pickCsvFile() {
+        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        i.setType("text/*");
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(i, REQUEST_PICK_CSV);
+    }
+
+    @Override
+    protected void onActivityResult(int req,int res,Intent data){
+        super.onActivityResult(req,res,data);
+        if (req==REQUEST_PICK_CSV && res==RESULT_OK && data!=null && data.getData()!=null) {
+            Uri uri = data.getData();
+            try (InputStream is = getContentResolver().openInputStream(uri)) {
+                if (csvMode==0) {
+                    CSVHelper.importStudents(is, studentsRef, new CSVHelper.ImportCallback(){
+                        @Override public void onSuccess(){
+                            Toast.makeText(StudentManagementActivity.this,
+                                    "Import student successfully",Toast.LENGTH_SHORT).show();
+                            loadStudentList();
+                        }
+                        @Override public void onError(String msg){
+                            Toast.makeText(StudentManagementActivity.this,
+                                    "Import error: "+msg,Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    Set<String> validIds = masterList.stream()
+                            .map(Student::getId)
+                            .collect(Collectors.toSet());
+                    CSVHelper.importCertificates(is, certRef, validIds, new CSVHelper.ImportCallback(){
+                        @Override public void onSuccess(){
+                            Toast.makeText(StudentManagementActivity.this,
+                                    "Import certificates successfully",Toast.LENGTH_SHORT).show();
+                        }
+                        @Override public void onError(String msg){
+                            Toast.makeText(StudentManagementActivity.this,
+                                    "Import error: "+msg,Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            } catch(Exception ex){
+                Toast.makeText(this,
+                        "Cannot open file: "+ex.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void exportStudentsToDownloads() {
+        try {
+            File out = CSVHelper.exportStudentsToDownloads(this, masterList, "students.csv");
+            Toast.makeText(this,
+                    "Saved to: "+ out.getAbsolutePath(),
+                    Toast.LENGTH_LONG).show();
+        } catch(Exception ex){
+            Toast.makeText(this,
+                    "Export thất bại: "+ex.getMessage(),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void exportCertificatesToDownloads() {
+        certRef.addListenerForSingleValueEvent(new ValueEventListener(){
+            @Override public void onDataChange(@NonNull DataSnapshot snap){
+                List<com.example.studentmanagementapp.model.Certificate> list = new ArrayList<>();
+                for (DataSnapshot c : snap.getChildren()) {
+                    com.example.studentmanagementapp.model.Certificate cert =
+                            c.getValue(com.example.studentmanagementapp.model.Certificate.class);
+                    if (cert!=null) {
+                        cert.setId(c.getKey());
+                        list.add(cert);
+                    }
+                }
+                try {
+                    File out = CSVHelper.exportCertificatesToDownloads(
+                            StudentManagementActivity.this, list, "certificates.csv");
+                    Toast.makeText(StudentManagementActivity.this,
+                            "Saved to: "+out.getAbsolutePath(),
+                            Toast.LENGTH_LONG).show();
+                } catch(Exception ex){
+                    Toast.makeText(StudentManagementActivity.this,
+                            "Export thất bại: "+ex.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError e){}
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.student_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
             return true;
+        } else if (id == R.id.action_sort_id) {
+            sortBy(Comparator.comparing(Student::getId));
+            return true;
+        } else if (id == R.id.action_sort_name) {
+            sortBy(Comparator.comparing(Student::getName, String.CASE_INSENSITIVE_ORDER));
+            return true;
+        } else if (id == R.id.action_sort_major) {
+            sortBy(Comparator.comparing(Student::getMajor, String.CASE_INSENSITIVE_ORDER));
+            return true;
+        } else if (id == R.id.action_sort_class) {
+            sortBy(Comparator.comparing(Student::getClassName, String.CASE_INSENSITIVE_ORDER));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void loadStudentList() {
-
-        studentsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                studentList.clear();
-                for (DataSnapshot snap : snapshot.getChildren()) {
-                    Student student = snap.getValue(Student.class);
-                    if (student != null) {
-                        student.setId(snap.getKey());
-                        Log.d("StudentID", "Loaded student ID: " + student.getId());
-                        studentList.add(student);
+        studentsRef.addValueEventListener(new ValueEventListener(){
+            @Override public void onDataChange(@NonNull DataSnapshot snap){
+                masterList.clear();
+                for (DataSnapshot c : snap.getChildren()) {
+                    Student s = c.getValue(Student.class);
+                    if (s!=null) {
+                        s.setId(c.getKey());
+                        masterList.add(s);
                     }
                 }
+                displayList.clear();
+                displayList.addAll(masterList);
                 adapter.notifyDataSetChanged();
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(StudentManagementActivity.this, "Lỗi tải dữ liệu sinh viên", Toast.LENGTH_SHORT).show();
-            }
+            @Override public void onCancelled(@NonNull DatabaseError e){}
         });
+    }
+
+    private void filter(String q) {
+        String query = q.trim().toLowerCase();
+        displayList.clear();
+        if (query.isEmpty()) {
+            displayList.addAll(masterList);
+        } else {
+            for (Student s : masterList) {
+                String combined = (s.getId()+" "+s.getName()+" "+
+                        s.getMajor()+" "+s.getClassName())
+                        .toLowerCase();
+                if (combined.contains(query)) displayList.add(s);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void sortBy(Comparator<Student> cmp) {
+        Collections.sort(displayList, cmp);
+        adapter.notifyDataSetChanged();
     }
 }

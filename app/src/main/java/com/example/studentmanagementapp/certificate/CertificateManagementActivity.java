@@ -27,7 +27,6 @@ public class CertificateManagementActivity extends BaseActivity {
     private TextView tvCertCount;
     private RecyclerView recyclerView;
     private FloatingActionButton fabAdd;
-    private Button btnImport, btnExport;
     private final List<Certificate> list = new ArrayList<>();
     private CertificateAdapter adapter;
     private User currentUser;
@@ -44,7 +43,7 @@ public class CertificateManagementActivity extends BaseActivity {
         currentUser = (User) getIntent().getSerializableExtra("currentUser");
         studentId   = getIntent().getStringExtra("studentId");
         if (currentUser == null || studentId == null) {
-            Toast.makeText(this, "Missing Data!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Missing data!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -54,15 +53,11 @@ public class CertificateManagementActivity extends BaseActivity {
         tvCertCount  = findViewById(R.id.tvCertCount);
         recyclerView = findViewById(R.id.recyclerViewCertificates);
         fabAdd       = findViewById(R.id.fabAddStudent);
-        btnImport    = findViewById(R.id.btnImportCertificate);
-        btnExport    = findViewById(R.id.btnExportCertificate);
 
         // 3. Phân quyền: chỉ admin/manager mới thấy Add/Import/Export
         String role = currentUser.getRole();
         if ("admin".equalsIgnoreCase(role) || "manager".equalsIgnoreCase(role)) {
             fabAdd.setVisibility(View.VISIBLE);
-            btnImport.setVisibility(View.VISIBLE);
-            btnExport.setVisibility(View.VISIBLE);
 
             fabAdd.setOnClickListener(v -> {
                 Intent i = new Intent(this, CertificateAddActivity.class);
@@ -70,14 +65,8 @@ public class CertificateManagementActivity extends BaseActivity {
                 i.putExtra("studentId",   studentId);
                 startActivity(i);
             });
-            btnImport.setOnClickListener(v ->
-                    Toast.makeText(this, "Import (chưa xử lý)", Toast.LENGTH_SHORT).show());
-            btnExport.setOnClickListener(v ->
-                    Toast.makeText(this, "Export (chưa xử lý)", Toast.LENGTH_SHORT).show());
         } else {
             fabAdd.setVisibility(View.GONE);
-            btnImport.setVisibility(View.GONE);
-            btnExport.setVisibility(View.GONE);
         }
 
         // 4. Setup RecyclerView + Adapter
@@ -85,9 +74,9 @@ public class CertificateManagementActivity extends BaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // 5. Query chỉ những chứng chỉ có studentID này
+        // 5. Query chỉ những chứng chỉ có studentId này
         certRef
-                .orderByChild("studentID")
+                .orderByChild("studentId")
                 .equalTo(studentId)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
