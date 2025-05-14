@@ -22,7 +22,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!--Student-->
         <activity android:name=".student.StudentManagementActivity"/>
+        <activity android:name=".student.StudentDetailActivity" />
+        <activity android:name=".student.StudentAddActivity" />
+
+        <!--Certificate-->
+        <activity android:name=".certificate.CertificateManagementActivity"/>
+        <activity android:name=".certificate.CertificateDetailActivity" />
+        <activity android:name=".certificate.CertificateAddActivity" />
 
         <!-- Các Activity còn lại -->
         <activity android:name=".LoginActivity"/>
