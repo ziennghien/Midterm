@@ -26,6 +26,15 @@
         android:layout_weight="1"
         android:gravity="center_vertical">
 
+        <!-- ID -->
+        <TextView
+            android:id="@+id/tvID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UserID"
+            android:textSize="14sp"
+            android:textColor="@android:color/black" />
+
         <TextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
@@ -34,14 +43,6 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/tvPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0123 456 789"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"/>
 
         <TextView
             android:id="@+id/tvLoginTime"

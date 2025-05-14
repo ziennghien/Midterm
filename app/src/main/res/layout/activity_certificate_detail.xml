@@ -1,61 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <!-- AppBar với Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <TextView
-            android:id="@+id/tvCertificateNumber"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Detail"
+            app:titleTextColor="@android:color/white"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Nội dung chính cuộn được -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Certificate Number"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/tvCertificateName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Certificate Name"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp" />
+            <!-- CertificateID -->
+            <EditText
+                android:id="@+id/edtID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="52200999"
+                android:hint="CertificateID"
+                android:inputType="textPersonName"
+                android:layout_marginTop="16dp" />
 
-        <TextView
-            android:id="@+id/tvIssueDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Issue Date"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp" />
+            <!-- Name -->
+            <EditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="Nguyen Van A"
+                android:hint="Name"
+                android:inputType="textPersonName"
+                android:layout_marginTop="16dp" />
 
-        <TextView
-            android:id="@+id/tvIssuer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Issuer"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp" />
+            <!-- Issue Date -->
+            <EditText
+                android:id="@+id/edtIssueDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Issue Date"
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginTop="16dp"
+                android:drawableEnd="@drawable/ic_calendar"
+                android:paddingEnd="12dp"/>
 
-        <TextView
-            android:id="@+id/tvPlace"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Place"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp" />
+            <!-- Save & Delete buttons -->
+            <LinearLayout
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="32dp">
 
-        <Button
-            android:id="@+id/btnEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit"
-            android:layout_marginTop="24dp" />
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Save" />
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/btnDelete"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Delete"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@android:color/holo_red_dark"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
 
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

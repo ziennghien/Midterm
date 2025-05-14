@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Detail"
+            app:title="Add Certificate"
             app:titleTextColor="@android:color/white"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -35,13 +35,13 @@
             android:padding="16dp"
             android:gravity="center_horizontal">
 
-            <!-- StudentID -->
+            <!-- CertificateID -->
             <EditText
                 android:id="@+id/edtID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="52200999"
-                android:hint="StudentID"
+                android:hint="CertificateID"
                 android:inputType="textPersonName"
                 android:layout_marginTop="16dp" />
 
@@ -55,28 +55,19 @@
                 android:inputType="textPersonName"
                 android:layout_marginTop="16dp" />
 
-            <!-- Major -->
+            <!-- Issue Date -->
             <EditText
-                android:id="@+id/edtMajor"
+                android:id="@+id/edtIssueDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="CNTT"
-                android:hint="Major"
-                android:inputType="text"
-                android:layout_marginTop="16dp" />
+                android:hint="Issue Date"
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginTop="16dp"
+                android:drawableEnd="@drawable/ic_calendar"
+                android:paddingEnd="12dp"/>
 
-            <!-- Class -->
-            <EditText
-                android:id="@+id/edtClass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="22050301"
-                android:hint="Class"
-                android:inputType="text"
-                android:layout_marginTop="16dp" />
-
-
-            <!-- Save & Delete buttons -->
+            <!-- Add buttons -->
             <LinearLayout
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="match_parent"
@@ -89,27 +80,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Save" />
+                    android:text="Add" />
 
-                <Button
-                    android:id="@+id/btnDelete"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Delete"
-                    android:layout_marginStart="8dp"
-                    android:backgroundTint="@android:color/holo_red_dark"
-                    android:textColor="@android:color/white" />
             </LinearLayout>
-
-            <!--Xem Certificate-->
-            <Button
-                android:id="@+id/btnCertificate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="View Certificate"
-                android:backgroundTint="@android:color/holo_blue_dark"/>
 
         </LinearLayout>
     </ScrollView>
