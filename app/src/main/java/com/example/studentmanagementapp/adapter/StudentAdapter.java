@@ -37,24 +37,24 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     public void onBindViewHolder(@NonNull StudentViewHolder holder, int position) {
         Student student = studentList.get(position);
 
-        holder.tvId.setText("ID: " + student.getId());
-        holder.tvName.setText("Name: " + student.getName());
-        holder.tvMajor.setText("Major: " + student.getAddress()); // Bạn có thể thay đổi thành student.getMajor() nếu có
+        // Gán dữ liệu
+        holder.tvID.setText(student.getId());
+        holder.tvName.setText(" - " + student.getName());
+        holder.tvMajor.setText("Major: " + student.getMajor());
+        holder.tvClass.setText("Class: " + student.getClassName());
 
+        // Xử lý click item
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
-            if ("employee".equals(role)) {
-                // Chỉ xem chi tiết
-                Intent intent = new Intent(context, StudentDetailActivity.class);
-                intent.putExtra("studentId", student.getId());
-                context.startActivity(intent);
+            Intent intent;
+            if ("employee".equalsIgnoreCase(role)) {
+                intent = new Intent(context, StudentDetailActivity.class);
             } else {
-                // Admin và Manager được chỉnh sửa
-                Intent intent = new Intent(context, StudentAddEditActivity.class);
+                intent = new Intent(context, StudentAddEditActivity.class);
                 intent.putExtra("mode", "edit");
-                intent.putExtra("studentId", student.getId());
-                context.startActivity(intent);
             }
+            intent.putExtra("studentId", student.getId());
+            context.startActivity(intent);
         });
     }
 
@@ -64,13 +64,14 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     }
 
     public static class StudentViewHolder extends RecyclerView.ViewHolder {
-        TextView tvId, tvName, tvMajor;
+        TextView tvID, tvName, tvMajor, tvClass;
 
         public StudentViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvId = itemView.findViewById(R.id.tvStudentId);
-            tvName = itemView.findViewById(R.id.tvStudentName);
-            tvMajor = itemView.findViewById(R.id.tvStudentMajor);
+            tvID = itemView.findViewById(R.id.tvID);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvMajor = itemView.findViewById(R.id.tvMajor);
+            tvClass = itemView.findViewById(R.id.tvClass);
         }
     }
 }

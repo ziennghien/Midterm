@@ -6,11 +6,12 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.studentmanagementapp.admin.UserManagementActivity;
+
 import com.example.studentmanagementapp.admin.HistoryViewActivity;
 import com.example.studentmanagementapp.ProfileActivity;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
 import com.example.studentmanagementapp.student.StudentManagementActivity;
+import com.example.studentmanagementapp.user.UserManagementActivity;
 
 import com.example.studentmanagementapp.LoginActivity;
 import com.example.studentmanagementapp.R;
