@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Toolbar tái sử dụng -->
     <include layout="@layout/toolbar_base" />
 
-    <!-- Nội dung chính -->
+    <!-- Nội dung chính cuộn được -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,9 +29,12 @@
                 android:layout_height="120dp"
                 android:src="@drawable/ic_avatar_placeholder"
                 android:scaleType="centerCrop"
-                android:layout_marginTop="24dp" />
+                android:layout_marginTop="24dp"
+                android:background="@drawable/avatar_border"
+                android:contentDescription="Avatar"
+                android:clipToOutline="true" />
 
-            <!-- Change Image -->
+            <!-- Nút chọn ảnh -->
             <Button
                 android:id="@+id/btnChangeImage"
                 android:layout_width="wrap_content"
@@ -38,15 +42,16 @@
                 android:text="Change Image"
                 android:layout_marginTop="8dp" />
 
-            <!-- UserID -->
+            <!-- ID -->
             <TextView
-                android:id="@+id/edtID"
+                android:id="@+id/tvUserId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="UserID"
+                android:textSize="18sp"
                 android:layout_marginTop="24dp"
-                android:layout_marginStart="2dp"
-                android:textSize="46px"/>
+                android:textColor="#444"
+                android:padding="4dp" />
 
             <!-- Name -->
             <EditText
@@ -55,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Name"
                 android:inputType="textPersonName"
-                android:layout_marginTop="24dp" />
+                android:layout_marginTop="16dp" />
 
             <!-- Age -->
             <EditText
@@ -66,12 +71,12 @@
                 android:inputType="number"
                 android:layout_marginTop="16dp" />
 
-            <!-- Phone Number -->
+            <!-- Phone -->
             <EditText
                 android:id="@+id/edtPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Phone Number"
+                android:hint="Phone"
                 android:inputType="phone"
                 android:layout_marginTop="16dp" />
 
@@ -84,33 +89,22 @@
                 android:inputType="text"
                 android:layout_marginTop="16dp" />
 
-            <!-- User (Email/Username) -->
+            <!-- Username -->
             <EditText
                 android:id="@+id/edtUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="User"
+                android:hint="User (Email)"
                 android:inputType="textEmailAddress"
                 android:layout_marginTop="16dp" />
 
-            <!-- Password -->
-            <EditText
-                android:id="@+id/edtPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:layout_marginTop="16dp" />
-
-            <!-- Save Button -->
+            <!-- Save -->
             <Button
                 android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Save"
                 android:layout_marginTop="32dp" />
-
         </LinearLayout>
     </ScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

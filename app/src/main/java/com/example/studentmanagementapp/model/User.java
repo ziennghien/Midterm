@@ -1,9 +1,9 @@
 package com.example.studentmanagementapp.model;
 
-public class User {
+import java.io.Serializable;
+public class User implements Serializable {
     private String id;
     private String userName;
-    private String password;
     private String name;
     private int age;
     private String phone;
@@ -14,10 +14,9 @@ public class User {
         // Required by Firebase
     }
 
-    public User(String id, String userName, String password, String name, int age, String phone, String role, boolean status) {
+    public User(String id, String userName,  String name, int age, String phone, String role, boolean status) {
         this.id = id;
         this.userName = userName;
-        this.password = password;
         this.name = name;
         this.age = age;
         this.phone = phone;
@@ -41,15 +40,6 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    // Password
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     // Name

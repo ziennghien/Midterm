@@ -92,7 +92,6 @@ public class AddEditUserActivity extends AppCompatActivity {
         User user = new User(
                 uid,
                 edtUser.getText().toString().trim(),
-                edtPassword.getText().toString().trim(),
                 edtName.getText().toString().trim(),
                 Integer.parseInt(edtAge.getText().toString().trim()),
                 edtPhone.getText().toString().trim(),
@@ -135,7 +134,6 @@ public class AddEditUserActivity extends AppCompatActivity {
                     edtPhone.setText(user.getPhone());
                     edtRole.setText(user.getRole());
                     edtUser.setText(user.getUserName());
-                    edtPassword.setText(user.getPassword());
 
                     if (user.getImage() != null && !user.getImage().isEmpty()) {
                         Glide.with(AddEditUserActivity.this)

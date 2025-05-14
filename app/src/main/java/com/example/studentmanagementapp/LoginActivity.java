@@ -3,15 +3,17 @@ package com.example.studentmanagementapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
-import com.example.studentmanagementapp.utils.FirebaseHelper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.studentmanagementapp.dashboard.AdminActivity;
 import com.example.studentmanagementapp.dashboard.EmployeeActivity;
 import com.example.studentmanagementapp.dashboard.ManagerActivity;
+import com.example.studentmanagementapp.model.User;
+import com.example.studentmanagementapp.utils.FirebaseHelper;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
 
@@ -25,18 +27,18 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login); // Đảm bảo tên file XML đúng
+        setContentView(R.layout.activity_login);
 
-        // Khởi tạo Firebase
+        // Firebase Auth & Realtime DB
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseHelper.getUsersReference();
 
-        // Liên kết với layout
+        // Liên kết view
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
 
-        // Xử lý sự kiện login
+        // Xử lý login
         btnLogin.setOnClickListener(view -> {
             String email = edtEmail.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
@@ -69,8 +71,16 @@ public class LoginActivity extends AppCompatActivity {
                     String userEmail = userSnapshot.child("userName").getValue(String.class);
                     if (email.equals(userEmail)) {
                         found = true;
-                        String role = userSnapshot.child("role").getValue(String.class);
-                        routeToRole(role);
+
+                        User user = userSnapshot.getValue(User.class);
+                        if (user != null) {
+                            user.setId(userSnapshot.getKey()); // Lấy ID từ key Firebase
+                            routeToRole(user);
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Không đọc được dữ liệu người dùng!", Toast.LENGTH_SHORT).show();
+                            mAuth.signOut();
+                        }
+
                         break;
                     }
                 }
@@ -88,16 +98,16 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void routeToRole(String role) {
-        if (role == null) {
+    private void routeToRole(User user) {
+        if (user == null || user.getRole() == null) {
             Toast.makeText(this, "Không xác định được vai trò!", Toast.LENGTH_SHORT).show();
             mAuth.signOut();
             return;
         }
 
-        Intent intent = null;
+        Intent intent;
 
-        switch (role) {
+        switch (user.getRole()) {
             case "admin":
                 intent = new Intent(this, AdminActivity.class);
                 break;
@@ -112,6 +122,13 @@ public class LoginActivity extends AppCompatActivity {
                 mAuth.signOut();
                 return;
         }
+
+        // Truyền object User (phải implements Serializable trong User)
+        intent.putExtra("currentUser", user);
+        Log.d("CurrentUser (Login)", "ID: " + user.getId()
+                + ", Name: " + user.getName()
+                + ", Email: " + user.getUserName()
+                + ", Role: " + user.getRole());
 
         startActivity(intent);
         finish(); // Đóng LoginActivity

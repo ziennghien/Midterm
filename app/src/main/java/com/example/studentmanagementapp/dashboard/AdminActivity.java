@@ -2,6 +2,7 @@ package com.example.studentmanagementapp.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
@@ -9,10 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.studentmanagementapp.admin.HistoryViewActivity;
 import com.example.studentmanagementapp.ProfileActivity;
+import com.example.studentmanagementapp.model.User;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
 import com.example.studentmanagementapp.student.StudentManagementActivity;
 import com.example.studentmanagementapp.user.UserManagementActivity;
-
 import com.example.studentmanagementapp.LoginActivity;
 import com.example.studentmanagementapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,39 +26,70 @@ public class AdminActivity extends AppCompatActivity {
 
     private DatabaseReference usersRef, studentsRef;
     private FirebaseAuth mAuth;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.example.studentmanagementapp.R.layout.activity_dashboard_admin); // Gắn layout XML bạn đã cung cấp
+        setContentView(R.layout.activity_dashboard_admin);
 
-        // Khởi tạo Firebase
+        // Nhận currentUser từ LoginActivity
+        currentUser = (User) getIntent().getSerializableExtra("currentUser");
+        if (currentUser == null) {
+            Toast.makeText(this, "Không nhận được user", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        Log.d("CurrentUser (Admin)", "ID: " + currentUser.getId()
+                + ", Name: " + currentUser.getName()
+                + ", Email: " + currentUser.getUserName()
+                + ", Role: " + currentUser.getRole());
+
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseHelper.getUsersReference();
         studentsRef = FirebaseHelper.getStudentsReference();
 
-        // Ánh xạ view
-        tvManagerCount = findViewById(com.example.studentmanagementapp.R.id.tvManagerCount);
-        tvEmployeeCount = findViewById(com.example.studentmanagementapp.R.id.tvEmployeeCount);
-        tvStudentCount = findViewById(com.example.studentmanagementapp.R.id.tvStudentCount);
+        tvManagerCount = findViewById(R.id.tvManagerCount);
+        tvEmployeeCount = findViewById(R.id.tvEmployeeCount);
+        tvStudentCount = findViewById(R.id.tvStudentCount);
 
-        btnUser = findViewById(com.example.studentmanagementapp.R.id.btnUser);
-        btnStudent = findViewById(com.example.studentmanagementapp.R.id.btnStudent);
-        btnHistory = findViewById(com.example.studentmanagementapp.R.id.btnHistory);
-        btnProfile = findViewById(com.example.studentmanagementapp.R.id.btnProfile);
+        btnUser = findViewById(R.id.btnUser);
+        btnStudent = findViewById(R.id.btnStudent);
+        btnHistory = findViewById(R.id.btnHistory);
+        btnProfile = findViewById(R.id.btnProfile);
         btnLogout = findViewById(R.id.btnLogout);
 
-        // Đếm số lượng theo vai trò
+        // Đếm số lượng người dùng
         countUsersByRole("manager", tvManagerCount);
         countUsersByRole("employee", tvEmployeeCount);
         countStudents(tvStudentCount);
 
-        // Xử lý các nút
-        btnUser.setOnClickListener(view -> startActivity(new Intent(this, UserManagementActivity.class)));
-        btnStudent.setOnClickListener(view -> startActivity(new Intent(this, StudentManagementActivity.class)));
-        btnHistory.setOnClickListener(view -> startActivity(new Intent(this, HistoryViewActivity.class)));
-        btnProfile.setOnClickListener(view -> startActivity(new Intent(this, ProfileActivity.class)));
+        // Mở User Management
+        btnUser.setOnClickListener(v -> {
+            Intent intent = new Intent(this, UserManagementActivity.class);
+            intent.putExtra("currentUser", currentUser);
+            startActivity(intent);
+        });
 
+        // Mở Student Management và truyền currentUser
+        btnStudent.setOnClickListener(v -> {
+            Intent intent = new Intent(this, StudentManagementActivity.class);
+            intent.putExtra("currentUser", currentUser);
+            startActivity(intent);
+        });
+
+        // Mở lịch sử
+        btnHistory.setOnClickListener(v -> startActivity(new Intent(this, HistoryViewActivity.class)));
+
+        // Mở hồ sơ cá nhân
+        btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            intent.putExtra("currentUser", currentUser);
+            startActivity(intent);
+        });
+
+        // Đăng xuất
         btnLogout.setOnClickListener(view -> {
             mAuth.signOut();
             Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
