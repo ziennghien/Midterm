@@ -27,7 +27,7 @@
         <!-- Các Activity còn lại -->
         <activity android:name=".LoginActivity"/>
         <activity android:name=".dashboard.AdminActivity"/>
-        <activity android:name=".admin.UserManagementActivity"/>
+        <activity android:name=".user.UserManagementActivity"/>
         <activity android:name=".admin.HistoryViewActivity"/>
         <activity android:name=".ProfileActivity"/>
         <activity android:name=".dashboard.EmployeeActivity"/>

@@ -11,6 +11,7 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.studentmanagementapp.BaseActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.studentmanagementapp.model.User;
@@ -21,7 +22,7 @@ import com.google.firebase.storage.*;
 
 import java.io.InputStream;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -41,6 +42,8 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        setToolbar(R.id.toolbar);
 
         // Firebase
         mAuth = FirebaseAuth.getInstance();
