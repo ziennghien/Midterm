@@ -109,25 +109,6 @@ public class UserDetailActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-        loadUserData();
-        if ("admin".equalsIgnoreCase(user.getRole())) {
-            btnDelete.setVisibility(Button.GONE);
-            btnSave.setVisibility(Button.GONE);
-            btnChangeImage.setEnabled(false);
-
-            edtName.setEnabled(false);
-            edtAge.setEnabled(false);
-            edtPhone.setEnabled(false);
-            switchStatus.setEnabled(false);
-            spinnerRole.setEnabled(false);
-        }
-
-        loadLoginHistory();
-
-        btnSave.setOnClickListener(v -> saveUserChanges());
-        btnDelete.setOnClickListener(v -> deleteUser());
-        btnChangeImage.setOnClickListener(v -> openImageChooser());
         edtPhone.setText("+84");
         edtPhone.setSelection(edtPhone.getText().length());
 
@@ -160,6 +141,24 @@ public class UserDetailActivity extends AppCompatActivity {
                 editing = false;
             }
         });
+        loadUserData();
+        if ("admin".equalsIgnoreCase(user.getRole())) {
+            btnDelete.setVisibility(Button.GONE);
+            btnSave.setVisibility(Button.GONE);
+            btnChangeImage.setEnabled(false);
+
+            edtName.setEnabled(false);
+            edtAge.setEnabled(false);
+            edtPhone.setEnabled(false);
+            switchStatus.setEnabled(false);
+            spinnerRole.setEnabled(false);
+        }
+
+        loadLoginHistory();
+
+        btnSave.setOnClickListener(v -> saveUserChanges());
+        btnDelete.setOnClickListener(v -> deleteUser());
+        btnChangeImage.setOnClickListener(v -> openImageChooser());
 
     }
 
