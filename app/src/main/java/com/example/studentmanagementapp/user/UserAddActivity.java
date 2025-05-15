@@ -156,7 +156,7 @@ public class UserAddActivity extends AppCompatActivity {
         // Dùng userName làm email và password
         mAuth.createUserWithEmailAndPassword(userName, userName)
                 .addOnSuccessListener(result -> {
-                    User user = new User(id, name, userName, age, phone, role, status);
+                    User user = new User(id, userName, name, age, phone, role, status);
                     usersRef.child(id).setValue(user)
                             .addOnSuccessListener(unused -> {
                                 Toast.makeText(this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();

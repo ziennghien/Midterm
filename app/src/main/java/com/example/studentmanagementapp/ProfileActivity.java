@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.*;
 
@@ -17,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.studentmanagementapp.BaseActivity;
 import com.example.studentmanagementapp.model.User;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.google.firebase.storage.*;
 
@@ -64,7 +66,13 @@ public class ProfileActivity extends BaseActivity {
         tvUserId.setText(currentUser.getId());
 
         loadUserData();
-
+        if ("employee".equalsIgnoreCase(currentUser.getRole())) {
+            edtName.setEnabled(false);
+            edtAge.setEnabled(false);
+            edtPhone.setEnabled(false);
+            edtRole.setEnabled(false);
+            edtUser.setEnabled(false);
+        }
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -89,6 +97,22 @@ public class ProfileActivity extends BaseActivity {
 
         btnChangeImage.setOnClickListener(view -> openImageChooser());
         btnSave.setOnClickListener(view -> saveUserData());
+
+        Button btnResetPassword = findViewById(R.id.btnResetPassword);
+        btnResetPassword.setOnClickListener(v -> {
+            String email = edtUser.getText().toString().trim();
+            if (TextUtils.isEmpty(email)) {
+                Toast.makeText(this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                    .addOnSuccessListener(aVoid ->
+                            Toast.makeText(this, "Đã gửi email đặt lại mật khẩu", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        });
+
         edtPhone.setText("+84");
         edtPhone.setSelection(edtPhone.getText().length());
 
