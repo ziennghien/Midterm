@@ -2,6 +2,8 @@ package com.example.studentmanagementapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,23 +23,26 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
 
+    private static final long IDLE_TIMEOUT = 600000; // 10 phút
+    private CountDownTimer idleTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
+        setupIdleTimer();
+
         if (currentUser == null) {
-            // Chưa đăng nhập → LoginActivity
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         } else {
-            // Đã đăng nhập → Lấy email để tìm user
             String email = currentUser.getEmail();
             usersRef = FirebaseHelper.getUsersReference();
 
-            // Tìm user có userName == email
             usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -47,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
                         if (email.equals(userEmail)) {
                             User user = userSnapshot.getValue(User.class);
                             if (user != null) {
-                                user.setId(userSnapshot.getKey()); // set ID từ key Firebase
-                                routeToRole(user); // truyền user thay vì chỉ role
+                                user.setId(userSnapshot.getKey());
+                                routeToRole(user);
                             }
                             return;
                         }
@@ -56,9 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if (!found) {
                         Toast.makeText(MainActivity.this, "Không tìm thấy người dùng!", Toast.LENGTH_SHORT).show();
-                        mAuth.signOut();
-                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                        finish();
+                        logout();
                     }
                 }
 
@@ -73,9 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private void routeToRole(User user) {
         if (user == null || user.getRole() == null) {
             Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
-            mAuth.signOut();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            logout();
             return;
         }
 
@@ -93,15 +94,50 @@ public class MainActivity extends AppCompatActivity {
                 break;
             default:
                 Toast.makeText(this, "Vai trò không hợp lệ!", Toast.LENGTH_SHORT).show();
-                mAuth.signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
+                logout();
                 return;
         }
 
-        intent.putExtra("currentUser", user); // ✅ Truyền user qua intent
+        intent.putExtra("currentUser", user);
         startActivity(intent);
         finish();
     }
 
+    private void setupIdleTimer() {
+        idleTimer = new CountDownTimer(IDLE_TIMEOUT, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {}
+
+            @Override
+            public void onFinish() {
+                Toast.makeText(MainActivity.this, "Tự động đăng xuất do không hoạt động.", Toast.LENGTH_LONG).show();
+                logout();
+            }
+        };
+
+        resetIdleTimer();
+    }
+
+    private void resetIdleTimer() {
+        idleTimer.cancel();
+        idleTimer.start();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        resetIdleTimer();
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void logout() {
+        mAuth.signOut();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (idleTimer != null) idleTimer.cancel();
+    }
 }

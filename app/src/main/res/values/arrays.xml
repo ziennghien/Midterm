@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="roles_array">
-        <item>admin</item>
         <item>manager</item>
         <item>employee</item>
     </string-array>

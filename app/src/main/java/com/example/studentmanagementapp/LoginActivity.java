@@ -17,28 +17,29 @@ import com.example.studentmanagementapp.utils.FirebaseHelper;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText edtEmail, edtPassword;
     private Button btnLogin;
     private FirebaseAuth mAuth;
-    private DatabaseReference usersRef;
+    private DatabaseReference usersRef, historyRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Firebase Auth & Realtime DB
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseHelper.getUsersReference();
+        historyRef = FirebaseHelper.getReference("LoginHistory");
 
-        // Liên kết view
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
 
-        // Xử lý login
         btnLogin.setOnClickListener(view -> {
             String email = edtEmail.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
@@ -74,13 +75,13 @@ public class LoginActivity extends AppCompatActivity {
 
                         User user = userSnapshot.getValue(User.class);
                         if (user != null) {
-                            user.setId(userSnapshot.getKey()); // Lấy ID từ key Firebase
+                            user.setId(userSnapshot.getKey());
+                            logLoginHistory(user.getId());
                             routeToRole(user);
                         } else {
                             Toast.makeText(LoginActivity.this, "Không đọc được dữ liệu người dùng!", Toast.LENGTH_SHORT).show();
                             mAuth.signOut();
                         }
-
                         break;
                     }
                 }
@@ -96,6 +97,14 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Lỗi kết nối CSDL", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void logLoginHistory(String userId) {
+        Map<String, Object> loginRecord = new HashMap<>();
+        loginRecord.put("userId", userId);
+        loginRecord.put("timestamp", System.currentTimeMillis());
+
+        historyRef.push().setValue(loginRecord);
     }
 
     private void routeToRole(User user) {
@@ -123,7 +132,6 @@ public class LoginActivity extends AppCompatActivity {
                 return;
         }
 
-        // Truyền object User (phải implements Serializable trong User)
         intent.putExtra("currentUser", user);
         Log.d("CurrentUser (Login)", "ID: " + user.getId()
                 + ", Name: " + user.getName()
@@ -131,6 +139,6 @@ public class LoginActivity extends AppCompatActivity {
                 + ", Role: " + user.getRole());
 
         startActivity(intent);
-        finish(); // Đóng LoginActivity
+        finish();
     }
 }

@@ -51,6 +51,8 @@
     <activity android:name=".dashboard.EmployeeActivity"/>
     <activity android:name=".dashboard.ManagerActivity"/>
     <activity android:name=".user.UserManagementActivity"/>
+    <activity android:name=".user.UserAddActivity"/>
+    <activity android:name=".user.UserDetailActivity"/>
     <activity android:name=".admin.HistoryViewActivity"/>
     <activity android:name=".ProfileActivity"/>
 

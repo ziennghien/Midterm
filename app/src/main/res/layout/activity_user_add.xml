@@ -45,6 +45,14 @@
                 android:layout_marginStart="2dp"
                 android:textSize="46px"/>
 
+            <EditText
+                android:id="@+id/edtUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username (Email)"
+                android:inputType="textEmailAddress"
+                android:layout_marginTop="16dp" />
+
             <!-- Name -->
             <EditText
                 android:id="@+id/edtName"

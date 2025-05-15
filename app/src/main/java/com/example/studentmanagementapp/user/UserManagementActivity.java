@@ -3,22 +3,19 @@ package com.example.studentmanagementapp.user;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import com.example.studentmanagementapp.BaseActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.*;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.studentmanagementapp.BaseActivity;
 import com.example.studentmanagementapp.R;
 import com.example.studentmanagementapp.adapter.UserAdapter;
 import com.example.studentmanagementapp.model.User;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.*;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +32,7 @@ public class UserManagementActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_list); // layout bạn đã gửi
+        setContentView(R.layout.activity_user_list);
 
         setToolbar(R.id.toolbar);
         recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
@@ -48,13 +45,13 @@ public class UserManagementActivity extends BaseActivity {
         recyclerViewUsers.setAdapter(userAdapter);
 
         fabAddUser.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AddEditUserActivity.class);
-            intent.putExtra("mode", "add");
+            Intent intent = new Intent(this, UserAddActivity.class);
             startActivity(intent);
         });
 
         loadUsers();
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -63,6 +60,7 @@ public class UserManagementActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void loadUsers() {
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -71,7 +69,6 @@ public class UserManagementActivity extends BaseActivity {
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     User user = snap.getValue(User.class);
                     if (user != null) {
-                        user.setId(snap.getKey()); // ⚠️ Quan trọng: gán ID từ key
                         userList.add(user);
                     }
                 }
