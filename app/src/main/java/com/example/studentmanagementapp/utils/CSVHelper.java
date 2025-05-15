@@ -3,7 +3,9 @@ package com.example.studentmanagementapp.utils;
 import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
+
 import com.example.studentmanagementapp.model.Certificate;
 import com.example.studentmanagementapp.model.Student;
 import com.example.studentmanagementapp.utils.FirebaseHelper;
@@ -21,8 +23,8 @@ import java.util.*;
 
 /**
  * CSVHelper hỗ trợ:
- *  - importStudents: đọc CSV sinh viên, validate, xóa Students + Certificates, rồi ghi lại.
- *  - importCertificates: đọc CSV chứng chỉ, validate rồi xóa/ghi lại.
+ *  - importStudents: đọc CSV sinh viên, validate, replace/add từng bản ghi.
+ *  - importCertificates: đọc CSV chứng chỉ, validate, replace/add từng bản ghi.
  *  - exportStudentsToDownloads / exportCertificatesToDownloads: tạo file CSV trong thư mục app-specific Downloads.
  */
 public class CSVHelper {
@@ -33,7 +35,7 @@ public class CSVHelper {
         void onError(String message);
     }
 
-    // ==== IMPORT SINH VIÊN ====
+    // ==== IMPORT SINH VIÊN: chỉ replace/add, không xóa tất cả ====
     public static void importStudents(@NonNull InputStream is,
                                       @NonNull DatabaseReference studentsRef,
                                       @NonNull ImportCallback callback) {
@@ -51,6 +53,7 @@ public class CSVHelper {
                 String name  = cols[1].trim();
                 String major = cols[2].trim();
                 String cls   = cols[3].trim();
+
                 if (TextUtils.isEmpty(id) || TextUtils.isEmpty(name)
                         || TextUtils.isEmpty(major) || TextUtils.isEmpty(cls)) {
                     callback.onError("Dòng " + row + " có trường rỗng");
@@ -64,40 +67,29 @@ public class CSVHelper {
                     callback.onError("ID trùng dòng " + row + ": " + id);
                     return;
                 }
+
                 fileMap.put(id, new Student(id, name, major, cls));
             }
-            // 1) Xóa Students cũ
-            studentsRef.removeValue((e1, r1) -> {
-                if (e1 != null) {
-                    callback.onError("Xóa Students cũ thất bại: " + e1.getMessage());
-                } else {
-                    // 2) Xóa Certificates cũ
-                    DatabaseReference certRef = FirebaseHelper.getReference("Certificates");
-                    certRef.removeValue((e2, r2) -> {
-                        if (e2 != null) {
-                            callback.onError("Xóa Certificates cũ thất bại: " + e2.getMessage());
-                        } else {
-                            // 3) Ghi Students mới
-                            for (Student s : fileMap.values()) {
-                                studentsRef.child(s.getId()).setValue(s);
-                            }
-                            callback.onSuccess();
-                        }
-                    });
-                }
-            });
+
+            // Với mỗi bản ghi trong fileMap, replace hoặc thêm mới
+            for (Student s : fileMap.values()) {
+                studentsRef.child(s.getId()).setValue(s);
+            }
+            callback.onSuccess();
+
         } catch (Exception ex) {
             callback.onError("Lỗi đọc CSV: " + ex.getMessage());
         }
     }
 
-    // ==== IMPORT CHỨNG CHỈ ====
+    // ==== IMPORT CHỨNG CHỈ: chỉ replace/add, không xóa tất cả ====
     public static void importCertificates(@NonNull InputStream is,
                                           @NonNull DatabaseReference certRef,
-                                          @NonNull Set<String> validstudentIds,
+                                          @NonNull Set<String> validStudentIds,
                                           @NonNull ImportCallback callback) {
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN, Locale.getDefault());
         sdf.setLenient(false);
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             Map<String, Certificate> fileMap = new LinkedHashMap<>();
             String line; int row = 0;
@@ -112,6 +104,7 @@ public class CSVHelper {
                 String name      = cols[1].trim();
                 String dateStr   = cols[2].trim();
                 String studentId = cols[3].trim();
+
                 if (TextUtils.isEmpty(id) || TextUtils.isEmpty(name)
                         || TextUtils.isEmpty(dateStr) || TextUtils.isEmpty(studentId)) {
                     callback.onError("Dòng " + row + " có trường rỗng");
@@ -125,30 +118,27 @@ public class CSVHelper {
                     callback.onError("ID trùng dòng " + row + ": " + id);
                     return;
                 }
-                try { sdf.parse(dateStr); }
-                catch (ParseException pe) {
+                try {
+                    sdf.parse(dateStr);
+                } catch (ParseException pe) {
                     callback.onError("Dòng " + row + " ngày không đúng định dạng DD/MM/YYYY");
                     return;
                 }
-                if (!validstudentIds.contains(studentId)) {
+                if (!validStudentIds.contains(studentId)) {
                     callback.onError("Dòng " + row + " studentId không tồn tại: " + studentId);
                     return;
                 }
+
                 Certificate c = new Certificate(id, name, studentId, dateStr);
                 fileMap.put(id, c);
             }
-            // Xóa cũ
-            certRef.removeValue((e, r) -> {
-                if (e != null) {
-                    callback.onError("Xóa Certificates cũ thất bại: " + e.getMessage());
-                } else {
-                    // Ghi mới
-                    for (Certificate c : fileMap.values()) {
-                        certRef.child(c.getId()).setValue(c);
-                    }
-                    callback.onSuccess();
-                }
-            });
+
+            // Với mỗi chứng chỉ trong fileMap, replace hoặc thêm mới
+            for (Certificate c : fileMap.values()) {
+                certRef.child(c.getId()).setValue(c);
+            }
+            callback.onSuccess();
+
         } catch (Exception ex) {
             callback.onError("Lỗi đọc CSV: " + ex.getMessage());
         }
