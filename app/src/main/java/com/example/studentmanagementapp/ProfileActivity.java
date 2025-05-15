@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.*;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -87,6 +89,38 @@ public class ProfileActivity extends BaseActivity {
 
         btnChangeImage.setOnClickListener(view -> openImageChooser());
         btnSave.setOnClickListener(view -> saveUserData());
+        edtPhone.setText("+84");
+        edtPhone.setSelection(edtPhone.getText().length());
+
+        edtPhone.addTextChangedListener(new TextWatcher() {
+            private boolean editing = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (editing) return;
+                editing = true;
+
+                String input = s.toString();
+
+                // Nếu không bắt đầu bằng +84, khôi phục lại
+                if (!input.startsWith("+84")) {
+                    edtPhone.setText("+84");
+                    edtPhone.setSelection(edtPhone.getText().length());
+                } else if (input.length() > 12) {
+                    // Nếu quá 9 số sau +84 => cắt bớt
+                    edtPhone.setText(input.substring(0, 12));
+                    edtPhone.setSelection(edtPhone.getText().length());
+                }
+
+                editing = false;
+            }
+        });
     }
 
     private void loadUserData() {
@@ -148,6 +182,12 @@ public class ProfileActivity extends BaseActivity {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return false;
         }
+        String phone = edtPhone.getText().toString().trim();
+        if (!phone.startsWith("+84") || phone.length() != 12) {
+            Toast.makeText(this, "Số điện thoại phải bắt đầu bằng +84 và đủ 9 số", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return true;
     }
 }
