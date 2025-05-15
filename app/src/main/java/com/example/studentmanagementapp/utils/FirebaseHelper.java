@@ -22,6 +22,10 @@ public class FirebaseHelper {
         return getDatabase().getReference("Students");
     }
 
+    // Trả về reference đến "LoginHistory"
+    public static DatabaseReference getLoginHistoryReference() {
+        return getDatabase().getReference("LoginHistory");
+    }
     // Tùy chọn: ref đến bất kỳ nhánh nào
     public static DatabaseReference getReference(String path) {
         return getDatabase().getReference(path);
