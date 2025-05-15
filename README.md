@@ -53,7 +53,7 @@
 ---
 
 ## 📷 Demo
-- 
+https://drive.google.com/file/d/12R5cWwX38Gx1Hy6yiycUcGdEFfaf9evk/view?usp=sharing
 ---
 
 ## 📌 Lưu ý
@@ -62,13 +62,14 @@
 - Khi tạo user mới, hệ thống sẽ tạo tài khoản Firebase Auth và lưu thông tin tương ứng vào Realtime Database.
 - Để thử chức năng Reset Password, vui lòng tạo tài khoản với Username là email còn đang sử dụng để có thể nhận được link Reset Password
 - Realtime Database được thiết lập cho việc đọc và ghi cho đến hết ngày 12/6/2025. Nếu sau thời gian trên, vui lòng liên hệ nhóm phát triển để thiết lập lại thời gian
+- File data.json được gửi kèm chỉ để thầy/cô dễ xem thêm về cơ sở dữ liệu của nhóm. Không có giá trị sử dung trực tiếp với ứng dụng.
 ---
 
 ## 🛠️ Cài đặt và chạy dự án
 
-1. Clone dự án về máy:
-   ```bash
+Cách 1. Clone dự án về máy:
    git clone https://github.com/ziennghien/Midterm.git
+Cách 2. Unzip folder source.zip và chạy trong Android Studio
 
 ## Thông tin liên lạc
 - Nguyễn Mỹ Duyên (Nhóm trưởng): 52200190@student.tdtu.edu.vn
